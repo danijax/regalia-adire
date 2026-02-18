@@ -22,7 +22,7 @@ export function ProductCard({ product }: ProductCardProps) {
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
-                    {!product.inStock && (
+                    {product.stock <= 0 && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                             <span className="text-white font-semibold">Out of Stock</span>
                         </div>

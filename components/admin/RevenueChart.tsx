@@ -43,7 +43,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
                             tickFormatter={(value) => `₦${value.toLocaleString()}`}
                         />
                         <Tooltip
-                            formatter={(value: number) => `₦${value.toLocaleString()}`}
+                            formatter={(value: number | undefined) => `₦${(value ?? 0).toLocaleString()}`}
                             contentStyle={{
                                 backgroundColor: "rgba(255, 255, 255, 0.95)",
                                 border: "1px solid #e5e7eb",

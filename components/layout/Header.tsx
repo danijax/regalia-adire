@@ -28,7 +28,7 @@ export function Header() {
                         Shop All
                     </Link>
                     <Link
-                        href="/collections"
+                        href="/products"
                         className="transition-colors hover:text-primary"
                     >
                         Collections

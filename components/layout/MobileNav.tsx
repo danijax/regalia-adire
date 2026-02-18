@@ -21,7 +21,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                         Shop All
                     </Link>
                     <Link
-                        href="/collections"
+                        href="/products"
                         className="text-lg font-medium transition-colors hover:text-primary"
                         onClick={onClose}
                     >

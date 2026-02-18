@@ -49,7 +49,7 @@ export default function CartPage() {
                         {/* Cart Items */}
                         <div className="lg:col-span-2 space-y-4">
                             {items.map((item) => (
-                                <Card key={`${item.id}-${item.selectedSize}`}>
+                                <Card key={`${item.id}-${item.selectedSize}-${item.selectedColor}`}>
                                     <CardContent className="p-4">
                                         <div className="flex gap-4">
                                             {/* Product Image */}
@@ -71,7 +71,7 @@ export default function CartPage() {
                                                     </h3>
                                                 </Link>
                                                 <p className="text-sm text-muted-foreground mt-1">
-                                                    Size: {item.selectedSize}
+                                                    Size: {item.selectedSize} • Color: {item.selectedColor}
                                                 </p>
                                                 <p className="text-lg font-bold text-primary mt-2">
                                                     {formatPrice(item.price)}
@@ -87,6 +87,7 @@ export default function CartPage() {
                                                                 updateQuantity(
                                                                     item.id,
                                                                     item.selectedSize,
+                                                                    item.selectedColor,
                                                                     item.quantity - 1
                                                                 )
                                                             }
@@ -103,6 +104,7 @@ export default function CartPage() {
                                                                 updateQuantity(
                                                                     item.id,
                                                                     item.selectedSize,
+                                                                    item.selectedColor,
                                                                     item.quantity + 1
                                                                 )
                                                             }
@@ -116,7 +118,7 @@ export default function CartPage() {
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() =>
-                                                            removeItem(item.id, item.selectedSize)
+                                                            removeItem(item.id, item.selectedSize, item.selectedColor)
                                                         }
                                                         className="text-destructive hover:text-destructive"
                                                     >
@@ -161,9 +163,11 @@ export default function CartPage() {
                                         </span>
                                     </div>
 
-                                    <Button size="lg" className="w-full">
-                                        Proceed to Checkout
-                                    </Button>
+                                    <Link href="/checkout">
+                                        <Button size="lg" className="w-full">
+                                            Proceed to Checkout
+                                        </Button>
+                                    </Link>
 
                                     <Link href="/products">
                                         <Button variant="outline" size="lg" className="w-full">

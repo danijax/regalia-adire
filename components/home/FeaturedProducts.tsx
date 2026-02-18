@@ -1,10 +1,16 @@
-"use client";
-
 import { ProductCard } from "@/components/product/ProductCard";
-import { getFeaturedProducts } from "@/lib/data/products";
+import { prisma } from "@/lib/prisma";
 
-export function FeaturedProducts() {
-    const featuredProducts = getFeaturedProducts();
+export async function FeaturedProducts() {
+    const featuredProducts = await prisma.product.findMany({
+        where: { featured: true },
+        take: 6,
+        orderBy: { createdAt: "desc" },
+    });
+
+    if (featuredProducts.length === 0) {
+        return null;
+    }
 
     return (
         <section className="py-16 bg-background">

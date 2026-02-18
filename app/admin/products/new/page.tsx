@@ -43,9 +43,21 @@ export default function NewProductPage() {
         category: "",
         stock: "",
         images: [] as string[],
+        sizes: [] as string[],
         colors: [] as string[],
         featured: false,
     });
+
+    const availableSizes = ["XS", "S", "M", "L", "XL", "XXL", "One Size"];
+
+    const toggleSize = (size: string) => {
+        setFormData(prev => ({
+            ...prev,
+            sizes: prev.sizes.includes(size)
+                ? prev.sizes.filter(s => s !== size)
+                : [...prev.sizes, size],
+        }));
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -77,6 +89,7 @@ export default function NewProductPage() {
                     category: formData.category,
                     stock: parseInt(formData.stock) || 0,
                     images: formData.images,
+                    sizes: formData.sizes,
                     colors: formData.colors,
                     featured: formData.featured,
                 }),
@@ -273,6 +286,31 @@ export default function NewProductPage() {
                             onChange={(urls) => setFormData(prev => ({ ...prev, images: urls }))}
                             maxImages={5}
                         />
+                    </CardContent>
+                </Card>
+
+                {/* Available Sizes */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Available Sizes</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-sm text-muted-foreground mb-3">
+                            Select the sizes this product is available in
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {availableSizes.map((size) => (
+                                <Button
+                                    key={size}
+                                    type="button"
+                                    variant={formData.sizes.includes(size) ? "default" : "outline"}
+                                    onClick={() => toggleSize(size)}
+                                    className="w-16"
+                                >
+                                    {size}
+                                </Button>
+                            ))}
+                        </div>
                     </CardContent>
                 </Card>
 

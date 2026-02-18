@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 // GET /api/admin/orders/[id] - Get single order
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await auth();
@@ -13,8 +13,10 @@ export async function GET(
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
+        const { id } = await params;
+
         const order = await prisma.order.findUnique({
-            where: { id: params.id },
+            where: { id },
         });
 
         if (!order) {
@@ -34,7 +36,7 @@ export async function GET(
 // PUT /api/admin/orders/[id] - Update order status
 export async function PUT(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await auth();
@@ -42,6 +44,7 @@ export async function PUT(
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
+        const { id } = await params;
         const body = await request.json();
         const { status } = body;
 
@@ -52,7 +55,7 @@ export async function PUT(
             );
         }
 
-        const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+        const validStatuses = ["pending", "paid", "processing", "shipped", "delivered", "cancelled"];
         if (!validStatuses.includes(status.toLowerCase())) {
             return NextResponse.json(
                 { error: "Invalid status value" },
@@ -61,7 +64,7 @@ export async function PUT(
         }
 
         const order = await prisma.order.findUnique({
-            where: { id: params.id },
+            where: { id },
         });
 
         if (!order) {
@@ -69,7 +72,7 @@ export async function PUT(
         }
 
         const updatedOrder = await prisma.order.update({
-            where: { id: params.id },
+            where: { id },
             data: { status: status.toLowerCase() },
         });
 
