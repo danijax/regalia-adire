@@ -1,12 +1,19 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { ProductCard } from "@/components/product/ProductCard";
 import { prisma } from "@/lib/prisma";
+import { ProductsClient } from "./ProductsClient";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Shop All Products | Adire by Regalia",
+    description: "Browse our complete collection of authentic Adire fashion pieces. Filter by category, size, color, and price.",
+};
 
 export default async function ProductsPage() {
-    const products = await prisma.product.findMany({
-        orderBy: { createdAt: "desc" },
-    });
+    const [products, categories] = await Promise.all([
+        prisma.product.findMany({ orderBy: { createdAt: "desc" } }),
+        prisma.category.findMany({ orderBy: { name: "asc" } }),
+    ]);
 
     return (
         <>
@@ -23,20 +30,10 @@ export default async function ProductsPage() {
                         </p>
                     </div>
 
-                    {/* Product Grid */}
-                    {products.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                            {products.map((product) => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-16">
-                            <p className="text-xl text-muted-foreground">
-                                No products available yet. Check back soon!
-                            </p>
-                        </div>
-                    )}
+                    <ProductsClient
+                        categories={categories}
+                        initialProducts={JSON.parse(JSON.stringify(products))}
+                    />
                 </div>
             </main>
             <Footer />

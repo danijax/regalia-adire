@@ -8,15 +8,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { formatPrice } from "@/lib/data/products";
 import type { Product } from "@/lib/data/products";
 import { useCartStore } from "@/lib/store/cartStore";
+import { ProductCard } from "@/components/product/ProductCard";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Check, ShoppingCart } from "lucide-react";
 
 interface ProductDetailClientProps {
     product: Product;
+    relatedProducts?: Product[];
 }
 
-export function ProductDetailClient({ product }: ProductDetailClientProps) {
+export function ProductDetailClient({ product, relatedProducts = [] }: ProductDetailClientProps) {
     const [selectedSize, setSelectedSize] = useState("");
     const [selectedColor, setSelectedColor] = useState("");
     const [selectedImage, setSelectedImage] = useState(0);
@@ -186,6 +188,20 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                         </div>
                     </div>
                 </div>
+
+                {/* Related Products */}
+                {relatedProducts.length > 0 && (
+                    <div className="mt-16">
+                        <h2 className="text-2xl font-serif font-bold text-primary mb-8">
+                            You May Also Like
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {relatedProducts.map((relatedProduct) => (
+                                <ProductCard key={relatedProduct.id} product={relatedProduct} />
+                            ))}
+                        </div>
+                    </div>
+                )}
             </main>
             <Footer />
         </>

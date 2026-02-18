@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -15,12 +16,30 @@ export default function ContactPage() {
         email: "",
         message: "",
     });
+    const [submitting, setSubmitting] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle form submission
-        alert("Thank you for your message! We'll get back to you soon.");
-        setFormData({ name: "", email: "", message: "" });
+        setSubmitting(true);
+        try {
+            const res = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                toast.success(data.message || "Message sent successfully!");
+                setFormData({ name: "", email: "", message: "" });
+            } else {
+                toast.error(data.error || "Failed to send message");
+            }
+        } catch {
+            toast.error("Something went wrong. Please try again.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -79,8 +98,8 @@ export default function ContactPage() {
                                             required
                                         />
                                     </div>
-                                    <Button type="submit" className="w-full">
-                                        Send Message
+                                    <Button type="submit" className="w-full" disabled={submitting}>
+                                        {submitting ? "Sending..." : "Send Message"}
                                     </Button>
                                 </form>
                             </CardContent>

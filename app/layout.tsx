@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import Script from "next/script";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const inter = Inter({
@@ -25,6 +27,8 @@ export const metadata: Metadata = {
   },
 };
 
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,6 +40,26 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
       >
         {children}
+        <Toaster position="top-right" richColors closeButton />
+        {GA_MEASUREMENT_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('consent', 'default', {
+                  'analytics_storage': 'granted'
+                });
+                gtag('config', '${GA_MEASUREMENT_ID}');
+              `}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

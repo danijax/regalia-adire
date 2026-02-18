@@ -1,5 +1,11 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "About Us | Adire by Regalia",
+    description: "Learn about our mission to celebrate Nigerian textile artistry through premium Adire fashion. Discover our story, craftsmanship, and commitment to cultural preservation.",
+};
 
 export default function AboutPage() {
     return (

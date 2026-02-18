@@ -1,9 +1,42 @@
+"use client";
+
 import Link from "next/link";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function Footer() {
+    const [email, setEmail] = useState("");
+    const [subscribing, setSubscribing] = useState(false);
+
+    const handleSubscribe = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) return;
+
+        setSubscribing(true);
+        try {
+            const res = await fetch("/api/newsletter", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                toast.success(data.message || "Subscribed successfully!");
+                setEmail("");
+            } else {
+                toast.error(data.error || "Failed to subscribe");
+            }
+        } catch {
+            toast.error("Something went wrong. Please try again.");
+        } finally {
+            setSubscribing(false);
+        }
+    };
+
     return (
         <footer className="border-t bg-muted/30">
             <div className="container mx-auto px-4 py-12">
@@ -44,7 +77,7 @@ export function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/new-arrivals" className="text-muted-foreground hover:text-primary transition-colors">
+                                <Link href="/products" className="text-muted-foreground hover:text-primary transition-colors">
                                     New Arrivals
                                 </Link>
                             </li>
@@ -84,16 +117,19 @@ export function Footer() {
                         <p className="text-sm text-muted-foreground mb-4">
                             Subscribe to receive updates, access to exclusive deals, and more.
                         </p>
-                        <div className="flex space-x-2">
+                        <form onSubmit={handleSubscribe} className="flex space-x-2">
                             <Input
                                 type="email"
                                 placeholder="Your email"
                                 className="max-w-[240px]"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                             />
-                            <Button type="submit" size="sm">
-                                Subscribe
+                            <Button type="submit" size="sm" disabled={subscribing}>
+                                {subscribing ? "..." : "Subscribe"}
                             </Button>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
@@ -113,3 +149,4 @@ export function Footer() {
         </footer>
     );
 }
+
