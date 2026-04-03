@@ -24,14 +24,21 @@ function getAdapter() {
 
 const adapter = getAdapter();
 
+// Helper to provide the correct configuration safely
+function flagConfig<T>(defaultValue: T) {
+    if (adapter) {
+        return { adapter, defaultValue };
+    }
+    return { decide: () => defaultValue, defaultValue };
+}
+
 /**
  * Toggle the redesigned hero banner on the homepage
  */
 export const showNewHeroBanner = flag<boolean>({
     key: "new-hero-banner",
     description: "Show the redesigned hero banner on the homepage",
-    defaultValue: false,
-    ...(adapter && { adapter }),
+    ...flagConfig(false),
 });
 
 /**
@@ -40,8 +47,7 @@ export const showNewHeroBanner = flag<boolean>({
 export const showAiTryon = flag<boolean>({
     key: "ai-tryon",
     description: "Enable AI virtual try-on on product pages",
-    defaultValue: false,
-    ...(adapter && { adapter }),
+    ...flagConfig(false),
 });
 
 /**
@@ -50,8 +56,7 @@ export const showAiTryon = flag<boolean>({
 export const showExpressCheckout = flag<boolean>({
     key: "express-checkout",
     description: "Enable express checkout options (Apple Pay, Google Pay)",
-    defaultValue: false,
-    ...(adapter && { adapter }),
+    ...flagConfig(false),
 });
 
 /**
@@ -60,8 +65,7 @@ export const showExpressCheckout = flag<boolean>({
 export const showLoyaltyProgram = flag<boolean>({
     key: "loyalty-program",
     description: "Show loyalty points and rewards program UI",
-    defaultValue: false,
-    ...(adapter && { adapter }),
+    ...flagConfig(false),
 });
 
 /**
@@ -70,8 +74,7 @@ export const showLoyaltyProgram = flag<boolean>({
 export const showProductReviews = flag<boolean>({
     key: "product-reviews",
     description: "Enable customer reviews and ratings on product pages",
-    defaultValue: false,
-    ...(adapter && { adapter }),
+    ...flagConfig(false),
 });
 
 /**
@@ -80,12 +83,11 @@ export const showProductReviews = flag<boolean>({
 export const homepageLayout = flag<string>({
     key: "homepage-layout",
     description: "A/B test homepage layout variant",
-    defaultValue: "default",
     options: [
         { value: "default", label: "Default Layout" },
         { value: "editorial", label: "Editorial Layout" },
     ],
-    ...(adapter && { adapter }),
+    ...flagConfig("default"),
 });
 
 /**
@@ -96,6 +98,5 @@ export const showCustomizedProducts = flag<boolean>({
     key: "customized-product-selection",
     description:
         "Enable customized product selection — let customers personalize Adire patterns and designs",
-    defaultValue: false,
-    ...(adapter && { adapter }),
+    ...flagConfig(false),
 });
