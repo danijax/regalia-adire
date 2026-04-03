@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: [
+    "@flags-sdk/vercel",
+    "@vercel/flags-core",
+  ],
   images: {
     remotePatterns: [
       {

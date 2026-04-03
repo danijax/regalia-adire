@@ -16,9 +16,18 @@ import { ArrowLeft, Check, ShoppingCart } from "lucide-react";
 interface ProductDetailClientProps {
     product: Product;
     relatedProducts?: Product[];
+    aiTryonEnabled?: boolean;
+    reviewsEnabled?: boolean;
+    customizationEnabled?: boolean;
 }
 
-export function ProductDetailClient({ product, relatedProducts = [] }: ProductDetailClientProps) {
+export function ProductDetailClient({
+    product,
+    relatedProducts = [],
+    aiTryonEnabled = false,
+    reviewsEnabled = false,
+    customizationEnabled = false,
+}: ProductDetailClientProps) {
     const [selectedSize, setSelectedSize] = useState("");
     const [selectedColor, setSelectedColor] = useState("");
     const [selectedImage, setSelectedImage] = useState(0);
@@ -165,6 +174,36 @@ export function ProductDetailClient({ product, relatedProducts = [] }: ProductDe
                                 )}
                             </div>
 
+                            {/* AI Virtual Try-On — gated by feature flag */}
+                            {aiTryonEnabled && (
+                                <Card className="border-dashed border-primary/30 bg-primary/5">
+                                    <CardContent className="p-6 text-center space-y-3">
+                                        <h3 className="font-semibold text-primary">✨ AI Virtual Try-On</h3>
+                                        <p className="text-sm text-muted-foreground">
+                                            See how this piece looks on you with our AI-powered virtual try-on.
+                                        </p>
+                                        <Button variant="outline" className="w-full">
+                                            Try It On
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            {/* Customization CTA — gated by feature flag */}
+                            {customizationEnabled && (
+                                <Card className="border-dashed border-secondary/30 bg-secondary/5">
+                                    <CardContent className="p-6 text-center space-y-3">
+                                        <h3 className="font-semibold text-secondary">🎨 Customize This Design</h3>
+                                        <p className="text-sm text-muted-foreground">
+                                            Personalize the pattern, colors, and style to create your unique piece.
+                                        </p>
+                                        <Button variant="outline" className="w-full">
+                                            Start Customizing
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            )}
+
                             {/* Product Details */}
                             <Card>
                                 <CardContent className="p-6 space-y-4">
@@ -188,6 +227,23 @@ export function ProductDetailClient({ product, relatedProducts = [] }: ProductDe
                         </div>
                     </div>
                 </div>
+
+                {/* Product Reviews — gated by feature flag */}
+                {reviewsEnabled && (
+                    <div className="mt-16">
+                        <h2 className="text-2xl font-serif font-bold text-primary mb-8">
+                            Customer Reviews
+                        </h2>
+                        <Card>
+                            <CardContent className="p-8 text-center">
+                                <p className="text-muted-foreground mb-4">
+                                    Be the first to review this product.
+                                </p>
+                                <Button variant="outline">Write a Review</Button>
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
 
                 {/* Related Products */}
                 {relatedProducts.length > 0 && (

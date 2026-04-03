@@ -1,7 +1,11 @@
 import { ProductCard } from "@/components/product/ProductCard";
 import { prisma } from "@/lib/prisma";
 
-export async function FeaturedProducts() {
+interface FeaturedProductsProps {
+    showLoyaltyBadges?: boolean;
+}
+
+export async function FeaturedProducts({ showLoyaltyBadges = false }: FeaturedProductsProps) {
     const featuredProducts = await prisma.product.findMany({
         where: { featured: true },
         take: 6,
@@ -26,10 +30,20 @@ export async function FeaturedProducts() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {featuredProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                        <div key={product.id} className="relative">
+                            <ProductCard product={product} />
+                            {showLoyaltyBadges && (
+                                <div className="absolute top-3 left-3 z-10">
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/90 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
+                                        ✦ Earn {Math.floor(product.price / 100)} pts
+                                    </span>
+                                </div>
+                            )}
+                        </div>
                     ))}
                 </div>
             </div>
         </section>
     );
 }
+

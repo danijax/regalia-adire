@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { ProductDetailClient } from "./ProductDetailClient";
 import type { Metadata } from "next";
+import { showAiTryon, showProductReviews, showCustomizedProducts } from "@/lib/flags";
 
 interface ProductPageProps {
     params: Promise<{ slug: string }>;
@@ -47,11 +48,23 @@ export default async function ProductPage({ params }: ProductPageProps) {
         orderBy: { createdAt: "desc" },
     });
 
+    // Evaluate feature flags server-side
+    const [aiTryonEnabled, reviewsEnabled, customizationEnabled] =
+        await Promise.all([
+            showAiTryon(),
+            showProductReviews(),
+            showCustomizedProducts(),
+        ]);
+
     return (
         <ProductDetailClient
             product={product}
             relatedProducts={JSON.parse(JSON.stringify(relatedProducts))}
+            aiTryonEnabled={aiTryonEnabled}
+            reviewsEnabled={reviewsEnabled}
+            customizationEnabled={customizationEnabled}
         />
     );
 }
+
 
